@@ -1,23 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// @ts-nocheck
-
 import React, { ReactElement, useEffect } from "react";
-import useTreeView from "../hooks/useTreeView";
-
-import { RenderTree } from "../types/message";
-import TreeViewChilds from "./TreeViewChilds";
-
+import { IconType } from "react-icons";
 import { FaCar, FaCube, FaRoad, FaSignsPost, FaTrafficLight, FaUser } from "react-icons/fa6";
 import { PiRoadHorizonFill } from "react-icons/pi";
+
+import TreeViewChilds from "./TreeViewChilds";
+import useTreeView from "../hooks/useTreeView";
+import { RenderTree } from "../types/message";
 
 interface TreeViewProps {
   node: RenderTree;
   defaultSelected: string[];
   onSelectedChanged: (ids: string[]) => void;
-  key?: React.Attributes;
+  key?: React.Key;
 }
 
-const NodeIconMap = {
+const NodeIconMap: { [key: string]: IconType } = {
   Vehicles: FaCar,
   Pedestrians: FaUser,
   "Stationary Objects": FaCube,
@@ -36,6 +33,7 @@ export default function TreeView(props: TreeViewProps): ReactElement {
         onSelectedChanged={props.onSelectedChanged}
         defaultSelected={props.defaultSelected}
         node={props.node}
+        key={props.key}
       />
     ) : null;
   };
@@ -48,7 +46,7 @@ export default function TreeView(props: TreeViewProps): ReactElement {
   useEffect(() => {
     const initalVisible = isDefaultExpanded(props.defaultSelected, props.node);
     setVisible(initalVisible);
-  }, []);
+  });
 
   return (
     <div>
@@ -89,7 +87,7 @@ export default function TreeView(props: TreeViewProps): ReactElement {
               paddingLeft: 12 * props.node.index,
             }}
           >
-            {props.node.children?.length && props.node.children?.length > 0 ? (
+            {props.node.children && props.node.children.length > 0 ? (
               <span
                 style={Object.assign(
                   { fontSize: "0.6rem" },
@@ -99,7 +97,7 @@ export default function TreeView(props: TreeViewProps): ReactElement {
                 &#10148;
               </span>
             ) : (
-              renderNodeIcon(props.node.name.split("/")[0])
+              renderNodeIcon(props.node.name.split("/")[0] ?? "")
             )}
 
             {props.node.value != undefined ? (
