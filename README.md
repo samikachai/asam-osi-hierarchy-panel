@@ -8,7 +8,7 @@ This is a custom extension for Lichtblick that enables to add a panel showing th
 
 Get Lichtblick from [github](https://github.com/Lichtblick-Suite/lichtblick/releases).
 
-Get extension file from [releases](https://github.com/Lichtblick-Suite/asam-osi-converter/releases).
+Get extension file from [releases](https://github.com/Lichtblick-Suite/asam-osi-hierarchy-panel/releases).
 
 Install the extension in Lichtblick by dragging the `.foxe` file into the Lichtblick window.
 
