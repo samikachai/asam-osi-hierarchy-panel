@@ -1,7 +1,7 @@
 {
   "name": "asam-osi-hierarchy-panel",
   "displayName": "ASAM OSI Hierarchy Panel",
-  "description": "Show ASAM OSI objects in a hierarchy view.",
+  "description": "Displays structured data following the standard of the ASAM Open Simulation Interface (ASAM OSI) in a hierarchy panel view.",
   "publisher": "Lichtblick",
   "homepage": "https://github.com/Lichtblick-Suite/asam-osi-hierarchy-panel",
   "version": "0.0.1",
