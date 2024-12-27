@@ -1,7 +1,7 @@
+import { GroundTruth, MovingObject_Type, SensorView } from "@lichtblick/asam-osi-types";
 import { renderHook } from "@testing-library/react";
 
 import useGroundTruthHierarchy from "../hooks/useGroundTruthHierarchy";
-import { GroundTruth, MovingObject_Type, SensorView } from "@lichtblick/asam-osi-types";
 
 describe("ground truth hierarchy hook", () => {
   const { result } = renderHook(() => useGroundTruthHierarchy());

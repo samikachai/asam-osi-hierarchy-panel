@@ -1,6 +1,6 @@
+import { GroundTruth, MovingObject_Type, SensorView } from "@lichtblick/asam-osi-types";
 import { MessageEvent, PanelExtensionContext, Time, Topic } from "@lichtblick/suite";
 import { useEffect, useState } from "react";
-import { GroundTruth, MovingObject_Type, SensorView } from "@lichtblick/asam-osi-types";
 import { DeepRequired } from "ts-essentials";
 
 import { BaseParam, RenderTree } from "../types/message";
@@ -135,14 +135,13 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
         ? (params.message as DeepRequired<SensorView>).global_ground_truth
         : (params.message as DeepRequired<GroundTruth>);
     const host_vehicle = message.moving_object
-      .filter((x) => x.id.value === message.host_vehicle_id?.value)
+      .filter((x) => x.id.value === message.host_vehicle_id.value)
       .map((x) =>
         createTreeItem("Vehicles/Host Vehicle/Host Vehicle", x.id.value, params.receiveTime),
       );
     const traffic_vehicles = message.moving_object
       .filter(
-        (x) =>
-          x.type === MovingObject_Type.VEHICLE && x.id.value !== message.host_vehicle_id?.value,
+        (x) => x.type === MovingObject_Type.VEHICLE && x.id.value !== message.host_vehicle_id.value,
       )
       .map((x) =>
         createTreeItem("Vehicles/Traffic Vehicles/Traffic Vehicle", x.id.value, params.receiveTime),

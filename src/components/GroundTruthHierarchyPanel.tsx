@@ -20,7 +20,10 @@ function GroundTruthHierarchyPanel({ context }: { context: PanelExtensionContext
   } = useGroundTruthHierarchy();
 
   const topicsToSubscribe = useMemo(
-    () => (topics ?? []).filter((topic) => ["osi3.SensorView", "osi3.GroundTruth"].includes(topic.schemaName)).map((topic) => ({topic: topic.name} as Subscription)),
+    () =>
+      (topics ?? [])
+        .filter((topic) => ["osi3.SensorView", "osi3.GroundTruth"].includes(topic.schemaName))
+        .map((topic) => ({ topic: topic.name }) as Subscription),
     [topics],
   );
 
