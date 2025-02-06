@@ -9,7 +9,7 @@ import { MessageEvent, PanelExtensionContext, Time, Topic } from "@lichtblick/su
 import { useEffect, useState } from "react";
 import { DeepRequired } from "ts-essentials";
 
-import { BaseParam, RenderTree } from "../types/message";
+import { BaseParam, RenderTree, ValidateSchemaResult } from "../types/message";
 
 export function formatTimeRaw(stamp: Time): string {
   return `${stamp.sec}.${stamp.nsec.toFixed().padStart(9, "0")}`;
@@ -30,7 +30,7 @@ export interface GroundTruthHierarchy {
   metaData: string;
   getMetaData: (schemaName: string, time: Time) => string;
   error: string | null;
-  warning: string | null;
+  warning: ValidateSchemaResult | null;
 }
 
 export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
@@ -52,7 +52,7 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
   ]);
   const [metaData, setMetaData] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [warning, setWarning] = useState<string | null>(null);
+  const [warning, setWarning] = useState<ValidateSchemaResult | null>(null);
 
   const mapBaseParam = (params: BaseParam[], time: Time): BaseParam[] =>
     params?.map(
@@ -153,21 +153,30 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
         ? (params.message as DeepRequired<SensorView>).global_ground_truth
         : (params.message as DeepRequired<GroundTruth>);
 
-    if (!validateAsamOsiMessage(rawMessage)) {
+    const schemaType = detectSchemaType(rawMessage);
+
+    if (!schemaType) {
       console.error(`Schema ${params.schemaName} does not match ASAM OSI structure`);
       setError(`Schema does not match ASAM OSI structure`);
       return [];
     }
 
-    if (
-      !params.schemaName
-        .toLowerCase()
-        .includes((detectSchemaType(rawMessage) ?? "").toLocaleLowerCase())
-    ) {
+    if (!validateAsamOsiMessage(rawMessage).result) {
+      console.warn(`Schema ${params.schemaName} has missing properties`);
+      setWarning({
+        message: `Schema has missing properties`,
+        missingKeys: validateAsamOsiMessage(rawMessage).missingKeys,
+      });
+    }
+
+    if (!params.schemaName.toLowerCase().includes(schemaType.toLocaleLowerCase())) {
       console.warn(
         `Schema ${params.schemaName} has a naming mismatch; Expected schema type: ${detectSchemaType(rawMessage)}`,
       );
-      setWarning(`Schema naming mismatch`);
+      setWarning({
+        message: `Schema naming mismatch`,
+        missingKeys: [],
+      });
     }
     const host_vehicle = message.moving_object
       ?.filter((x) => x.id.value === message.host_vehicle_id.value)

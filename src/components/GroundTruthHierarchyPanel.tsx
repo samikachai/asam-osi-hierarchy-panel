@@ -22,6 +22,7 @@ interface SelectedTopic {
 
 function GroundTruthHierarchyPanel({ context }: { context: PanelExtensionContext }): ReactElement {
   const [selectedTopic, setSelectedTopic] = useState<SelectedTopic>({ name: "", schema: "" });
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const {
     defaultSelected,
@@ -109,17 +110,44 @@ function GroundTruthHierarchyPanel({ context }: { context: PanelExtensionContext
         </div>
       )}
       {warning && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            color: "orange",
-            fontSize: "8px",
-            marginTop: "8px",
-          }}
-        >
-          <FaTriangleExclamation size={12} style={{ margin: "0 5px 0 5px" }} />
-          <span>{warning}</span>
+        <div style={{ position: "relative", display: "inline-block" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              color: "orange",
+              fontSize: "8px",
+              marginTop: "8px",
+              cursor: "pointer",
+            }}
+            onClick={() => setShowTooltip((prev) => !prev)}
+          >
+            <FaTriangleExclamation size={12} style={{ margin: "0 5px 0 5px" }} />
+            <span>{warning.message}</span>
+          </div>
+
+          {showTooltip && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "#fff",
+                color: "#333",
+                padding: "5px",
+                fontSize: "10px",
+                borderRadius: "4px",
+                whiteSpace: "nowrap",
+                marginTop: "5px",
+                zIndex: 1000,
+              }}
+            >
+              {warning.missingKeys.map((key) => {
+                return <div key={key}>{key}</div>;
+              })}
+            </div>
+          )}
         </div>
       )}
 
