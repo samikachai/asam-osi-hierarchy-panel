@@ -155,7 +155,7 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
 
     const schemaType = detectSchemaType(rawMessage);
 
-    if (!schemaType) {
+    if (!schemaType || (schemaType !== "SensorView" && schemaType !== "GroundTruth")) {
       console.error(`Schema ${params.schemaName} does not match ASAM OSI structure`);
       setError(`Schema does not match ASAM OSI structure`);
       return [];
