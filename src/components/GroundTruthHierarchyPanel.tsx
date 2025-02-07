@@ -126,7 +126,7 @@ function GroundTruthHierarchyPanel({ context }: { context: PanelExtensionContext
             <span>{warning.message}</span>
           </div>
 
-          {showTooltip && (
+          {showTooltip && warning.missingKeys.length > 0 && (
             <div
               style={{
                 position: "absolute",

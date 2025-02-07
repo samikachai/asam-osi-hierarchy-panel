@@ -155,7 +155,7 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
 
     const schemaType = detectSchemaType(rawMessage);
 
-    if (!schemaType || (schemaType !== "SensorView" && schemaType !== "GroundTruth")) {
+    if (!schemaType) {
       console.error(`Schema ${params.schemaName} does not match ASAM OSI structure`);
       setError(`Schema does not match ASAM OSI structure`);
       return [];
@@ -178,36 +178,97 @@ export default function useGroundTruthHierarchy(): GroundTruthHierarchy {
         missingKeys: [],
       });
     }
-    const host_vehicle = message.moving_object
-      ?.filter((x) => x.id.value === message.host_vehicle_id.value)
-      ?.map((x) =>
-        createTreeItem("Vehicles/Host Vehicle/Host Vehicle", x.id.value, params.receiveTime),
-      );
-    const traffic_vehicles = message.moving_object
-      ?.filter(
-        (x) => x.type === MovingObject_Type.VEHICLE && x.id.value !== message.host_vehicle_id.value,
-      )
-      ?.map((x) =>
-        createTreeItem("Vehicles/Traffic Vehicles/Traffic Vehicle", x.id.value, params.receiveTime),
-      );
-    const pedestrians = message.moving_object
-      ?.filter((x) => x.type === MovingObject_Type.PEDESTRIAN)
-      ?.map((x) => createTreeItem("Pedestrians/Pedestrian", x.id.value, params.receiveTime));
-    const stationary_objects = message.stationary_object?.map((x) =>
-      createTreeItem("Stationary Objects/Stationary Object", x.id.value, params.receiveTime),
-    );
-    const lanes = message.lane?.map((x) =>
-      createTreeItem("Lanes/Lane", x.id.value, params.receiveTime),
-    );
-    const lane_boundaries = message.lane_boundary?.map((x) =>
-      createTreeItem("Lane Boundaries/Lane Boundary", x.id.value, params.receiveTime),
-    );
-    const traffic_signs = message.traffic_sign?.map((x) =>
-      createTreeItem("Traffic Signs/Traffic Sign", x.id.value, params.receiveTime),
-    );
-    const traffic_lights = message.traffic_light?.map((x) =>
-      createTreeItem("Traffic Lights/Traffic Light", x.id.value, params.receiveTime),
-    );
+    let host_vehicle: BaseParam[] = [],
+      traffic_vehicles: BaseParam[] = [],
+      pedestrians: BaseParam[] = [],
+      stationary_objects: BaseParam[] = [],
+      lanes: BaseParam[] = [],
+      lane_boundaries: BaseParam[] = [],
+      traffic_signs: BaseParam[] = [],
+      traffic_lights: BaseParam[] = [];
+
+    try {
+      host_vehicle =
+        message.moving_object
+          ?.filter((x) => x.id.value === message.host_vehicle_id.value)
+          ?.map((x) =>
+            createTreeItem("Vehicles/Host Vehicle/Host Vehicle", x.id.value, params.receiveTime),
+          ) || [];
+    } catch (error) {
+      console.error("Error processing host_vehicle:", error);
+    }
+
+    try {
+      traffic_vehicles =
+        message.moving_object
+          ?.filter(
+            (x) =>
+              x.type === MovingObject_Type.VEHICLE && x.id.value !== message.host_vehicle_id.value,
+          )
+          ?.map((x) =>
+            createTreeItem(
+              "Vehicles/Traffic Vehicles/Traffic Vehicle",
+              x.id.value,
+              params.receiveTime,
+            ),
+          ) || [];
+    } catch (error) {
+      console.error("Error processing traffic_vehicles:", error);
+    }
+
+    try {
+      pedestrians =
+        message.moving_object
+          ?.filter((x) => x.type === MovingObject_Type.PEDESTRIAN)
+          ?.map((x) => createTreeItem("Pedestrians/Pedestrian", x.id.value, params.receiveTime)) ||
+        [];
+    } catch (error) {
+      console.error("Error processing pedestrians:", error);
+    }
+
+    try {
+      stationary_objects =
+        message.stationary_object?.map((x) =>
+          createTreeItem("Stationary Objects/Stationary Object", x.id.value, params.receiveTime),
+        ) || [];
+    } catch (error) {
+      console.error("Error processing stationary_objects:", error);
+    }
+
+    try {
+      lanes =
+        message.lane?.map((x) => createTreeItem("Lanes/Lane", x.id.value, params.receiveTime)) ||
+        [];
+    } catch (error) {
+      console.error("Error processing lanes:", error);
+    }
+
+    try {
+      lane_boundaries =
+        message.lane_boundary?.map((x) =>
+          createTreeItem("Lane Boundaries/Lane Boundary", x.id.value, params.receiveTime),
+        ) || [];
+    } catch (error) {
+      console.error("Error processing lane_boundaries:", error);
+    }
+
+    try {
+      traffic_signs =
+        message.traffic_sign?.map((x) =>
+          createTreeItem("Traffic Signs/Traffic Sign", x.id.value, params.receiveTime),
+        ) || [];
+    } catch (error) {
+      console.error("Error processing traffic_signs:", error);
+    }
+
+    try {
+      traffic_lights =
+        message.traffic_light?.map((x) =>
+          createTreeItem("Traffic Lights/Traffic Light", x.id.value, params.receiveTime),
+        ) || [];
+    } catch (error) {
+      console.error("Error processing traffic_lights:", error);
+    }
 
     return [
       ...host_vehicle,
